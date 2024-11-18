@@ -4,6 +4,7 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../error/AppError";
 import { TOrder } from "./order.interface";
 import Order from "./order.model";
+import Product from "../product/product.model";
 
 // create
 const createOrder = async (payload: TOrder) => {
@@ -16,6 +17,20 @@ const createOrder = async (payload: TOrder) => {
   if (isExistOrder) {
     throw new AppError(httpStatus.CONFLICT, "Already Ordered");
   }
+
+  const product = await Product.findById(payload.productId);
+  const totalQuantity = product!.inventory.quantity;
+  if (totalQuantity === 0) {
+    throw new AppError(httpStatus.FORBIDDEN, "insufficient stock");
+  }
+
+  await Product.findByIdAndUpdate(
+    payload.productId,
+    {
+      "inventory.quantity": totalQuantity - payload.quantity,
+    },
+    { new: true }
+  );
 
   const result = await Order.create(payload);
   return result;
