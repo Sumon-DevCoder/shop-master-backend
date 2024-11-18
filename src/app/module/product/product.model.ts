@@ -13,7 +13,7 @@ const ProductVariantSchema: Schema = new Schema<TProductVariant>({
 
 const InventoryDetailsSchema: Schema = new Schema<TInventoryDetails>({
   quantity: { type: Number, required: true, min: 0 },
-  inStock: { type: Boolean },
+  inStock: { type: Boolean, default: true },
 });
 
 const ProductSchema: Schema = new Schema<TProduct>({

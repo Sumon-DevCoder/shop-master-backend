@@ -7,7 +7,7 @@ const router = Router();
 
 // create Product
 router.post(
-  "/create-product",
+  "/",
   validateRequest(productValidationSchema.CreateProductValidationSchema),
   ProductControllers.createProduct
 );
